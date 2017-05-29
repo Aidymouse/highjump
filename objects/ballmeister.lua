@@ -1,6 +1,6 @@
-Player = {
-	y = 0,
-	x = 200,
+Ballmeister = {
+	y = 100,
+	x = 10,
 	w = 10,
 	h = 10,
 	r = 5,
@@ -13,10 +13,10 @@ Player = {
 	isGrounded = false,
 	isFlying = true,
 	friction = 20,
-	groundY = 600
+	groundY = 590
 }
 
-function Player:draw(shape)
+function Ballmeister:draw(shape)
 	local Shape = shape or 'square'
 
 	if Shape == 'square' then
@@ -26,7 +26,7 @@ function Player:draw(shape)
 	end
 end
 
-function Player:move(dt)
+function Ballmeister:move(dt)
 	if self.isFlying then
 		
 		self.y = self.y + self.yVel
@@ -34,7 +34,7 @@ function Player:move(dt)
 
 		if self.y + 5 >= self.groundY then
 
-			self.y = 595
+			self.y = self.groundY - 5
 
 			if -(self.yVel-2) > 1 then
 				self.shape = "square"
@@ -50,8 +50,11 @@ function Player:move(dt)
 		end
 
 	end
+	self.x = self.x + 1
 end
 
+function Ballmeister:setGroundHeight(h)
+	self.groundY = h
+end
 
-
-return Player
+return Ballmeister
