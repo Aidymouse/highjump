@@ -2,29 +2,49 @@
 -- More jumps = more fun
 MAXJUMPS = 3
 
+controls = {
+	JUMP = "space",
+	TRANSFORM = "lshift",
+	LEFT = "left",
+	RIGHT = "right"
+}
+
+playerShapes = {
+	SQUARE = "square",
+	CIRCLE = "circle"
+}
+
 Ballmeister = {
 	y = 100,
 	x = 10,
 	w = 10,
 	h = 10,
 	r = 5,
+
+	maxSpeed = { x: 200, y: 100 },
+
 	xVel = 0,
 	yVel = 0,
 	gravity = 10, -- 10
 	falling = "down",
-	shape = "square",
 	speed = 200,
 	isGrounded = false,
 	isFlying = true,
 	friction = 20,
 	numJumps = MAXJUMPS,
 	groundY = 590
+
+	shape = playerShapes.SQUARE
 }
 
-function Ballmeister:draw(shape)
-	local Shape = shape or 'square'
+function Ballmesiter:update(dt)
+	Ballmeister:move(dt)
+end
 
-	if Shape == 'square' then
+function Ballmeister:draw(shape)
+	
+
+	if Shape == playerShapes.SQUARE then
 		love.graphics.rectangle('fill', self.x-5, self.y-5, self.w, self.h)
 	else
 		love.graphics.circle('fill', self.x, self.y, self.r)
@@ -46,17 +66,12 @@ function Ballmeister:jump()
 end
 
 function Ballmeister:move(dt)
-	if love.keyboard.isDown('left') then  -- Allow ballmeister to move left
+	if love.keyboard.isDown(controls.LEFT) then  -- Allow ballmeister to move left
 		self.x = self.x - 5
 	end
 
-	if love.keyboard.isDown('right') then  -- Allow ballmeister to move right
+	if love.keyboard.isDown(controls.RIGHT) then  -- Allow ballmeister to move right
 		self.x = self.x + 5
-	end
-
-	if self.y < self.groundY then  -- Make sure ballmeister falls if walking off a ledge
-		self.isFlying = true
-		self.isGrounded = false
 	end
 
 	if self.isFlying then  -- Moveing up or down through the air
