@@ -4,6 +4,11 @@ Ballmeister = require 'objects/ballmeister'
 
 function love.load()
 
+	platforms = {
+		{x=0, y=200, width=100, height=love.graphics.getHeight()-200},
+		{x=0, y=500, width=love.graphics.getWidth(), height=love.graphics.getHeight()-500},
+	}
+
 end
 
 function love.update(dt)
@@ -12,23 +17,21 @@ function love.update(dt)
 		love.event.quit()
 	end
 
+	Ballmeister:update(dt, platforms)
 
 end
 
 function love.keypressed(k)
-	if k == c_jump then
-		Ballmeister:jump()
-	end
 end
 
 function love.draw()
-	love.graphics.setColor(255,255,255)
-	love.graphics.rectangle('line', 10-5, 100-5, 10, 10)
+
 	Ballmeister:draw()
 
-	love.graphics.rectangle('line', 0, 200, 100, 400)
+	for k, v in ipairs(platforms) do
 
-	love.graphics.setColor(100,100,100)
-	love.graphics.rectangle('fill', 0, 590, 800, 10)
+		love.graphics.rectangle("line", v.x, v.y, v.width, v.height)
+
+	end
 
 end

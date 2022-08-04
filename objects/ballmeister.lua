@@ -2,6 +2,8 @@
 -- More jumps = more fun
 MAXJUMPS = 3
 
+COLLISIONS = require '../collision'
+
 controls = {
 	JUMP = "space",
 	TRANSFORM = "lshift",
@@ -19,26 +21,30 @@ Ballmeister = {
 	x = 10,
 	w = 10,
 	h = 10,
+
 	r = 5,
 
-	maxSpeed = { x: 200, y: 100 },
+	maxSpeed = { x=200, y=800 },
 
 	xVel = 0,
 	yVel = 0,
+
 	gravity = 10, -- 10
 	falling = "down",
 	speed = 200,
-	isGrounded = false,
-	isFlying = true,
+
+	flags = {
+		grounded = true
+	},
+
 	friction = 20,
 	numJumps = MAXJUMPS,
-	groundY = 590
 
 	shape = playerShapes.SQUARE
 }
 
-function Ballmesiter:update(dt)
-	Ballmeister:move(dt)
+function Ballmeister:update(dt, platforms)
+	Ballmeister:move(dt, platforms)
 end
 
 function Ballmeister:draw(shape)
@@ -65,7 +71,7 @@ function Ballmeister:jump()
 	end
 end
 
-function Ballmeister:move(dt)
+function Ballmeister:move(dt, platforms)
 	if love.keyboard.isDown(controls.LEFT) then  -- Allow ballmeister to move left
 		self.x = self.x - 5
 	end
@@ -74,31 +80,30 @@ function Ballmeister:move(dt)
 		self.x = self.x + 5
 	end
 
-	if self.isFlying then  -- Moveing up or down through the air
+	-- GRAVITY --
+	self.yVel = self.yVel + self.gravity * dt
+
+	-- COLLISIONS --
+	for key, platform in pairs(platforms) do
 		
-		self.y = self.y + self.yVel  -- Update ballmeisters y coordinate by his y velocity
-		self.yVel = self.yVel + (dt * self.gravity)  -- Update the y velocity with gravity
+		colData = COLLISIONS.AABB(
+			{x=self.x-self.r, y=self.y-self.r+self.yVel, width=self.r*2, height=self.r*2},
+			platform
+		)
 
-		if self.y + 5 >= self.groundY then
 
-			self.y = self.groundY - 5
-
-			if -(self.yVel-2) > 1 then
-				self.shape = 'square'
-			end
-
-			if self.shape == "square" then
-				self.numJumps = MAXJUMPS
-				self.isFlying = false
-				self.isGrounded = true
-				self.yVel = 0
-			else
-				self.yVel = -(self.yVel-1)
-			end
-			
+		if colData.collided then
+			self.yVel = 0
+			self.y = self.y + colData.shortestVert
+			--colData.shortestVert
+			--self.xVel = self.xVel + colData.shortestHoriz
 		end
-
+		
 	end
+
+	self.y = self.y + self.yVel
+	self.x = self.x + self.xVel
+
 
 end
 
