@@ -5,7 +5,7 @@ Ballmeister = require 'objects/ballmeister'
 function love.load()
 
 	platforms = {
-		{x=0, y=200, width=100, height=love.graphics.getHeight()-200},
+		{x=100, y=200, width=100, height=love.graphics.getHeight()-200},
 		{x=0, y=500, width=love.graphics.getWidth(), height=love.graphics.getHeight()-500},
 	}
 
@@ -22,6 +22,7 @@ function love.update(dt)
 end
 
 function love.keypressed(k)
+	Ballmeister:keypressed(k)
 end
 
 function love.draw()
