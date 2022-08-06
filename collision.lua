@@ -42,6 +42,21 @@ function collision.AABB(rect1, rect2)
 
 end
 
+function collision.twoCircles(circle1, circle2)
+
+    if math.sqrt( (circle1.x - circle2.x)^2 + (circle1.y - circle2.y)^2 ) < circle1.radius + circle2.radius then
+        return {
+            collided = true
+        }
+    end
+
+
+    return {
+        collided = false
+    }
+
+end
+
 
 
 return collision

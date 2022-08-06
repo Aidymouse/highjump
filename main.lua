@@ -1,12 +1,16 @@
-Ballmeister = require 'objects/ballmeister'
-
+Ballmeister = require 'objects.ballmeister'
+Platforms = require 'objects.platform'
+Bouncers = require 'objects.bouncer'
 
 
 function love.load()
 
-	platforms = {
-		{x=100, y=200, width=100, height=love.graphics.getHeight()-200},
-		{x=0, y=500, width=love.graphics.getWidth(), height=love.graphics.getHeight()-500},
+	colliders = {
+		Platforms:New(100, 200, 100, love.graphics.getHeight()-200),
+		Platforms:New(400, 500, 100, 50, "bouncepad"),
+		Platforms:New(0, 500, love.graphics.getWidth(), love.graphics.getHeight()-500),
+
+		Bouncer:New(300, 300, 50, 600)
 	}
 
 end
@@ -17,7 +21,7 @@ function love.update(dt)
 		love.event.quit()
 	end
 
-	Ballmeister:update(dt, platforms)
+	Ballmeister:update(dt, colliders)
 
 end
 
@@ -25,13 +29,17 @@ function love.keypressed(k)
 	Ballmeister:keypressed(k)
 end
 
+function love.mousepressed(x, y)
+	table.insert(colliders, Bouncer:New(x, y, 50, 600))
+end
+
 function love.draw()
 
 	Ballmeister:draw()
 
-	for k, v in ipairs(platforms) do
+	for k, v in ipairs(colliders) do
 
-		love.graphics.rectangle("line", v.x, v.y, v.width, v.height)
+		v:draw()
 
 	end
 
